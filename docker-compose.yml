@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  data-pipeline:
+    build: ./data-pipeline
+    container_name: data_pipeline
+
+  statistical-model-training:
+    build: ./statistical-model-training
+    container_name: statistical_model_training
+    depends_on:
+      - data-pipeline
+
+  nn-model-training:
+    build: ./nn-model-training
+    container_name: nn_model_training
+    depends_on:
+      - data-pipeline
+
+  model-deployment:
+    build: ./model-deployment
+    container_name: model_deployment
+    depends_on:
+      - statistical-model-training
+      - nn-model-training
+    ports:
+      - "5000:5000"
